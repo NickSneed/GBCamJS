@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
-import applyPalette from './applyPalette.js';
+import applyPalette from './applypalette.js';
+import palettes from '../assets/palettes.js';
 
 // Mock the palettes from the external asset file.
 vi.mock('../assets/palettes.js', () => ({
@@ -22,9 +23,9 @@ vi.mock('../assets/palettes.js', () => ({
 describe('applyPalette', () => {
     it('should correctly map photoData indices to RGBA pixel values for a given palette', () => {
         const photoData = [0, 1, 2, 3, 3, 2, 1, 0];
-        const paletteId = 'test-palette';
+        const palette = palettes['test-palette'];
 
-        const result = applyPalette(photoData, paletteId);
+        const result = applyPalette(photoData, palette);
 
         const expectedPixels = new Uint8ClampedArray([
             // 0 -> black
@@ -50,9 +51,9 @@ describe('applyPalette', () => {
 
     it('should work with a different palette', () => {
         const photoData = [0, 1, 2, 3];
-        const paletteId = 'another-palette';
+        const palette = palettes['another-palette'];
 
-        const result = applyPalette(photoData, paletteId);
+        const result = applyPalette(photoData, palette);
 
         const expectedPixels = new Uint8ClampedArray([
             // 0 -> red
@@ -70,9 +71,9 @@ describe('applyPalette', () => {
 
     it('should return an empty array for empty photoData', () => {
         const photoData = [];
-        const paletteId = 'test-palette';
+        const palette = palettes['test-palette'];
 
-        const result = applyPalette(photoData, paletteId);
+        const result = applyPalette(photoData, palette);
 
         expect(result).toEqual(new Uint8ClampedArray([]));
     });
