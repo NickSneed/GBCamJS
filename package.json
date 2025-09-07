@@ -5,11 +5,14 @@
     "type": "module",
     "main": "main.js",
     "exports": {
-        ".": "./main.js"
+        ".": "./src/main.js"
     },
     "scripts": {
-        "build": "node tools/createpalettegrid.js",
-        "prepare": "husky install"
+        "build": "node src/tools/createpalettegrid.js",
+        "prepare": "husky install",
+        "test": "eslint src/ && vitest run",
+        "test:watch": "vitest",
+        "test:coverage": "vitest run --coverage"
     },
     "keywords": [
         "gameboy",
@@ -20,6 +23,8 @@
     "author": "",
     "license": "ISC",
     "devDependencies": {
+        "@vitest/coverage-v8": "^3.2.4",
+        "eslint": "^9.35.0",
         "husky": "^8.0.0",
         "vitest": "^3.2.4"
     },

@@ -162,4 +162,4 @@ const getData = (saveData) => {
     };
 };
 
-export { getData, getImgData, getComment, getUsername, getIsDeleted, getGender, getFrameId, getTileIndex, gbcCharToAscii, convertSection };
+export { getData };

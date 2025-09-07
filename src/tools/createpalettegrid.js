@@ -24,7 +24,7 @@ const ctx = canvas.getContext('2d');
 
 const createPNG = (data) => {
     // Output to an 'output' sub-directory in the current working directory
-    const folderPath = path.resolve(process.cwd(), 'assets/');
+    const folderPath = path.resolve(process.cwd(), 'src/assets/');
 
     try {
         // Ensure the output directory exists
