@@ -1,5 +1,32 @@
 import chars from '../assets/character.js';
 
+// Define constants
+const OFFSETS = {
+    PHOTO_DELETED_FLAGS: 0x011d7,
+    USERNAME: 0x02f04,
+    USERNAME_END: 0x02f0c,
+    GENDER: 0x02f0d,
+    PHOTO_COMMENT_START: 0x02f15,
+    PHOTO_COMMENT_END: 0x02f2f,
+    PHOTO_FRAME_ID: 0x02f54,
+    PHOTO_DATA_START: 0x2000
+};
+
+const SIZES = {
+    PHOTO_BLOCK: 0x1000,
+    TILE: 16, // bytes
+    IMAGE_WIDTH: 128,
+    IMAGE_HEIGHT: 112
+};
+
+const CONSTANTS = {
+    NUM_PHOTOS: 30,
+    DELETED_FLAG_VALUE: 0xff, // 255
+    GENDER_MALE: 0x01,
+    GBC_CHAR_CODE_START: 0x56,
+    GBC_CHAR_CODE_END: 0xc8
+};
+
 /**
  * Calculates the memory address for a specific tile within the save data.
  * Each tile is 16 bytes long.
@@ -8,44 +35,41 @@ import chars from '../assets/character.js';
  * @returns {number} The calculated memory address for the tile.
  */
 const getTileIndex = (base, tileId) => {
-    return base + 16 * tileId;
+    return base + SIZES.TILE * tileId;
 };
 
 /**
- * Extracts pixel data for a single photo from the save file and converts it into an ImageData object.
- * It reads the 2bpp tile data and maps it to the provided color palette.
+ * Extracts pixel data for a single photo from the save file.
+ * It reads the 2bpp tile data and maps it to palette indices (0-3).
  * @param {Uint8Array} saveData The raw save data for the Game Boy Camera.
  * @param {number} photoIndex The index of the photo to extract (0-29).
- * @returns {{width: number, height: number, data: Uint8Array}} An object containing the image dimensions and a flat array of palette indices (0-3).
+ * @returns {{width: number, height: number, photoData: number[]}} An object containing the image dimensions and a flat array of palette indices.
  */
-const getImgData = (saveData, photoIndex) => {
-    // First photo at 0x2000, 0x1000 per photo
-    const offset = 0x2000 + photoIndex * 0x1000;
-    const w = 128;
-    const h = 112;
+export const getImgData = (saveData, photoIndex) => {
+    const offset = OFFSETS.PHOTO_DATA_START + photoIndex * SIZES.PHOTO_BLOCK;
+    const w = SIZES.IMAGE_WIDTH;
+    const h = SIZES.IMAGE_HEIGHT;
     const wTiles = w >> 3;
 
-    // This will store the decoded palette index (0-3) for each pixel.
-    const decodedData = [];
+    const decodedData = new Array(w * h);
 
-    // Loops saveData and creates decoded array
     for (let y = 0; y < h; y++) {
         for (let x = 0; x < wTiles; x++) {
-            const tdata = getTileIndex(offset, (y >> 3) * 0x10 + x);
+            const tileDataOffset = getTileIndex(offset, (y >> 3) * 0x10 + x);
 
             for (let i = 0; i < 8; i++) {
-                const p = tdata + (y & 7) * 2;
+                const pixelDataOffset = tileDataOffset + (y & 7) * 2;
 
                 let val = 0;
-                if ((saveData[p] & (0x80 >> i)) != 0) {
+                if ((saveData[pixelDataOffset] & (0x80 >> i)) !== 0) {
                     val += 1;
                 }
-                if ((saveData[p + 1] & (0x80 >> i)) != 0) {
+                if ((saveData[pixelDataOffset + 1] & (0x80 >> i)) !== 0) {
                     val += 2;
                 }
 
-                const X = x * 8 + i;
-                decodedData[y * w + X] = val;
+                const pixelX = x * 8 + i;
+                decodedData[y * w + pixelX] = val;
             }
         }
     }
@@ -58,8 +82,8 @@ const getImgData = (saveData, photoIndex) => {
  * @param {number} photoIndex The index of the photo to check.
  * @returns {boolean} True if the photo is deleted, false otherwise.
  */
-const getIsDeleted = (saveData, photoIndex) => {
-    return saveData[0x011d7 + photoIndex] === 255;
+export const getIsDeleted = (saveData, photoIndex) => {
+    return saveData[OFFSETS.PHOTO_DELETED_FLAGS + photoIndex] === CONSTANTS.DELETED_FLAG_VALUE;
 };
 
 /**
@@ -68,14 +92,10 @@ const getIsDeleted = (saveData, photoIndex) => {
  * @param {number} code The character code from the save file.
  * @returns {string} The corresponding ASCII character, or an empty string if not found.
  */
-const gbcCharToAscii = (code) => {
-    // 0x56 = A to 0xC8 = @
-    // 'A' to 'Z', '0' to '9', etc.
-    if (code >= 0x56 && code <= 0xc8) {
-        return chars[code - 0x56];
+export const gbcCharToAscii = (code) => {
+    if (code >= CONSTANTS.GBC_CHAR_CODE_START && code <= CONSTANTS.GBC_CHAR_CODE_END) {
+        return chars[code - CONSTANTS.GBC_CHAR_CODE_START];
     }
-
-    // Add more mappings as needed
     return '';
 };
 
@@ -90,11 +110,11 @@ const gbcCharToAscii = (code) => {
  */
 const convertSection = (saveData, start, end, offset = 0) => {
     let str = '';
-
     for (let addr = start + offset; addr <= end + offset; addr++) {
-        str = saveData[addr] ? str + gbcCharToAscii(saveData[addr]) : str;
+        if (saveData[addr]) {
+            str += gbcCharToAscii(saveData[addr]);
+        }
     }
-
     return str;
 };
 
@@ -104,8 +124,9 @@ const convertSection = (saveData, start, end, offset = 0) => {
  * @param {number} photoIndex The index of the photo.
  * @returns {string} The photo's comment.
  */
-const getComment = (saveData, photoIndex) => {
-    return convertSection(saveData, 0x02f15, 0x02f2f, 0x01000 * photoIndex);
+export const getComment = (saveData, photoIndex) => {
+    const offset = SIZES.PHOTO_BLOCK * photoIndex;
+    return convertSection(saveData, OFFSETS.PHOTO_COMMENT_START, OFFSETS.PHOTO_COMMENT_END, offset);
 };
 
 /**
@@ -113,8 +134,8 @@ const getComment = (saveData, photoIndex) => {
  * @param {Uint8Array} saveData The raw save data.
  * @returns {string} The owner's username.
  */
-const getUsername = (saveData) => {
-    return convertSection(saveData, 0x02f04, 0x02f0c);
+export const getUsername = (saveData) => {
+    return convertSection(saveData, OFFSETS.USERNAME, OFFSETS.USERNAME_END);
 };
 
 /**
@@ -122,8 +143,8 @@ const getUsername = (saveData) => {
  * @param {Uint8Array} saveData The raw save data.
  * @returns {'male' | 'female'} The owner's gender.
  */
-const getGender = (saveData) => {
-    return saveData[0x02f0d] === 0x01 ? 'male' : 'female';
+export const getGender = (saveData) => {
+    return saveData[OFFSETS.GENDER] === CONSTANTS.GENDER_MALE ? 'male' : 'female';
 };
 
 /**
@@ -131,34 +152,49 @@ const getGender = (saveData) => {
  * The value in the save data is 0-indexed, so 1 is added to match the frame filenames (e.g., frame1.png).
  * @param {Uint8Array} saveData The raw save data.
  * @param {number} photoIndex The index of the photo.
- * @returns {number} The frame ID (1-based).
+ * @returns {string} The frame ID (1-based).
  */
-const getFrameId = (saveData, photoIndex) => {
-    const frameId = saveData[0x02f54 + 0x01000 * photoIndex] + 1;
-    return frameId + '';
+export const getFrameId = (saveData, photoIndex) => {
+    const offset = SIZES.PHOTO_BLOCK * photoIndex;
+    const frameId = saveData[OFFSETS.PHOTO_FRAME_ID + offset] + 1;
+    return String(frameId);
 };
 
 /**
- * Converts save data to a JS object
+ * Converts save data to a JS object.
+ * This function parses metadata for all photos, but image pixel data is loaded lazily
+ * upon first access to the `photoData` property of an image object.
  * @param {Uint8Array} saveData The raw save data.
- * @returns {object} An object containing all of the save data
+ * @returns {object} An object containing all of the save data.
  */
 const parseSave = (saveData) => {
-    const imgs = [];
+    const images = [];
 
-    for (let i = 0; i < 30; i++) {
-        imgs[i] = {
-            ...getImgData(saveData, i),
-            comment: getComment(saveData, i),
-            frameId: getFrameId(saveData, i),
-            isDeleted: getIsDeleted(saveData, i)
+    for (let i = 0; i < CONSTANTS.NUM_PHOTOS; i++) {
+        // Use a closure to capture the photo index `i`
+        const photoIndex = i;
+        let decodedPhotoData = null; // Cache for the decoded data
+
+        images[photoIndex] = {
+            width: SIZES.IMAGE_WIDTH,
+            height: SIZES.IMAGE_HEIGHT,
+            comment: getComment(saveData, photoIndex),
+            frameId: getFrameId(saveData, photoIndex),
+            isDeleted: getIsDeleted(saveData, photoIndex),
+            get photoData() {
+                if (decodedPhotoData === null) {
+                    // Decode image data on first access and cache it.
+                    decodedPhotoData = getImgData(saveData, photoIndex).photoData;
+                }
+                return decodedPhotoData;
+            }
         };
     }
 
     return {
         username: getUsername(saveData),
         gender: getGender(saveData),
-        images: imgs
+        images: images
     };
 };
 
