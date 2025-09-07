@@ -1,6 +1,6 @@
 # GBCamJS
 
-A collection of Javascript tools and assets for the Game Boy Camera™.
+A collection of JavaScript tools and assets for the Game Boy Camera™.
 
 Save parsing was based on gbcam2png:
 https://github.com/raphnet/gbcam2png
