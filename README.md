@@ -79,6 +79,10 @@ The returned object has the following structure:
 
 _Save parsing logic was based on gbcam2png and information from Raphael-Boichot's research._
 
+https://github.com/raphnet/gbcam2png
+
+https://github.com/Raphael-Boichot/Inject-pictures-in-your-Game-Boy-Camera-saves
+
 _Game Boy™, Game Boy Camera™, Game Boy Color™, and Super Game Boy™ are registered trademarks of Nintendo._
 
 ### Palettes

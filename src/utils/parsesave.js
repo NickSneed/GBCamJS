@@ -28,17 +28,6 @@ const CONSTANTS = {
 };
 
 /**
- * Calculates the memory address for a specific tile within the save data.
- * Each tile is 16 bytes long.
- * @param {number} base The base address for the tile data.
- * @param {number} tileId The ID of the tile.
- * @returns {number} The calculated memory address for the tile.
- */
-const getTileIndex = (base, tileId) => {
-    return base + SIZES.TILE * tileId;
-};
-
-/**
  * Extracts pixel data for a single photo from the save file.
  * It reads the 2bpp tile data and maps it to palette indices (0-3).
  * @param {Uint8Array} saveData The raw save data for the Game Boy Camera.
@@ -46,34 +35,41 @@ const getTileIndex = (base, tileId) => {
  * @returns {{width: number, height: number, photoData: number[]}} An object containing the image dimensions and a flat array of palette indices.
  */
 export const getImgData = (saveData, photoIndex) => {
-    const offset = OFFSETS.PHOTO_DATA_START + photoIndex * SIZES.PHOTO_BLOCK;
-    const w = SIZES.IMAGE_WIDTH;
-    const h = SIZES.IMAGE_HEIGHT;
-    const wTiles = w >> 3;
+    const photoOffset = OFFSETS.PHOTO_DATA_START + photoIndex * SIZES.PHOTO_BLOCK;
+    const width = SIZES.IMAGE_WIDTH;
+    const height = SIZES.IMAGE_HEIGHT;
+    const tilesW = width / 8; // 16
+    const tilesH = height / 8; // 14
 
-    const decodedData = new Array(w * h);
+    // Use a Uint8Array for better performance and memory usage with pixel data.
+    const decodedData = new Uint8Array(width * height);
 
-    for (let y = 0; y < h; y++) {
-        for (let x = 0; x < wTiles; x++) {
-            const tileDataOffset = getTileIndex(offset, (y >> 3) * 0x10 + x);
+    // Iterate through tiles, which is more aligned with the data's structure.
+    for (let tileY = 0; tileY < tilesH; tileY++) {
+        for (let tileX = 0; tileX < tilesW; tileX++) {
+            const tileId = tileY * tilesW + tileX;
+            const tileOffset = photoOffset + tileId * SIZES.TILE;
 
-            for (let i = 0; i < 8; i++) {
-                const pixelDataOffset = tileDataOffset + (y & 7) * 2;
+            // Process 8 rows of pixels for the current tile.
+            for (let rowInTile = 0; rowInTile < 8; rowInTile++) {
+                const byte1 = saveData[tileOffset + rowInTile * 2];
+                const byte2 = saveData[tileOffset + rowInTile * 2 + 1];
 
-                let val = 0;
-                if ((saveData[pixelDataOffset] & (0x80 >> i)) !== 0) {
-                    val += 1;
+                // Decode 8 pixels at once for the current row in the tile.
+                for (let colInTile = 0; colInTile < 8; colInTile++) {
+                    const mask = 0x80 >> colInTile;
+                    const bit0 = byte1 & mask ? 1 : 0;
+                    const bit1 = byte2 & mask ? 2 : 0; // bit1 is the most significant bit
+                    const val = bit1 | bit0;
+
+                    const pixelX = tileX * 8 + colInTile;
+                    const pixelY = tileY * 8 + rowInTile;
+                    decodedData[pixelY * width + pixelX] = val;
                 }
-                if ((saveData[pixelDataOffset + 1] & (0x80 >> i)) !== 0) {
-                    val += 2;
-                }
-
-                const pixelX = x * 8 + i;
-                decodedData[y * w + pixelX] = val;
             }
         }
     }
-    return { width: w, height: h, photoData: decodedData };
+    return { width, height, photoData: decodedData };
 };
 
 /**
