@@ -344,7 +344,7 @@ const palettes = {
         { r: 122, g: 100, b: 61 },
         { r: 59, g: 53, b: 44 }
     ],
-    // Game Byo Camera Manager
+    // Game Boy Camera Manager
     gbcm1: [
         { r: 255, g: 255, b: 255 },
         { r: 160, g: 160, b: 160 },
