@@ -28,6 +28,21 @@ const CONSTANTS = {
 };
 
 /**
+ * Checks if the provided photo data is empty or consists entirely of zero-value pixels.
+ * This is used to determine if a photo slot in the save file contains actual image data.
+ * @param {Uint8Array | number[]} photoData The pixel data for a photo, as an array of palette indices.
+ * @returns {boolean} True if the photo data is considered empty, false otherwise.
+ */
+const isPhotoDataEmpty = (photoData) => {
+    if (!photoData || photoData.length === 0) {
+        return true; // An empty array is considered empty.
+    }
+    // Check if all pixels are the same as the first pixel.
+    const firstPixel = photoData[0];
+    return photoData.every((pixel) => pixel === firstPixel);
+};
+
+/**
  * Extracts pixel data for a single photo from the save file.
  * It reads the 2bpp tile data and maps it to palette indices (0-3).
  * @param {Uint8Array} saveData The raw save data for the Game Boy Camera.
@@ -172,7 +187,7 @@ const parseSave = (saveData) => {
         const photoIndex = i;
         let decodedPhotoData = null; // Cache for the decoded data
 
-        images[photoIndex] = {
+        let image = {
             width: SIZES.IMAGE_WIDTH,
             height: SIZES.IMAGE_HEIGHT,
             comment: getComment(array8Bit, photoIndex),
@@ -186,6 +201,10 @@ const parseSave = (saveData) => {
                 return decodedPhotoData;
             }
         };
+
+        if (!isPhotoDataEmpty(image.photoData)) {
+            images.push(image);
+        }
     }
 
     return {
