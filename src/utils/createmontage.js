@@ -4,6 +4,14 @@ const TOTAL_PIXELS = WIDTH * HEIGHT;
 
 const createHorizontalMontage = (photoData1, photoData2) => {
     const montageData = new Uint8Array(TOTAL_PIXELS);
+    const halfHeightInPixels = TOTAL_PIXELS / 2;
+    montageData.set(photoData1.subarray(0, halfHeightInPixels));
+    montageData.set(photoData2.subarray(halfHeightInPixels), halfHeightInPixels);
+    return montageData;
+};
+
+const createVerticalMontage = (photoData1, photoData2) => {
+    const montageData = new Uint8Array(TOTAL_PIXELS);
     const halfWidth = WIDTH / 2;
     for (let y = 0; y < HEIGHT; y++) {
         const rowStartIndex = y * WIDTH;
@@ -11,14 +19,6 @@ const createHorizontalMontage = (photoData1, photoData2) => {
         montageData.set(photoData1.subarray(rowStartIndex, rowStartIndex + halfWidth), rowStartIndex);
         montageData.set(photoData2.subarray(rowStartIndex + halfWidth, rowEndIndex), rowStartIndex + halfWidth);
     }
-    return montageData;
-};
-
-const createVerticalMontage = (photoData1, photoData2) => {
-    const montageData = new Uint8Array(TOTAL_PIXELS);
-    const halfHeightInPixels = TOTAL_PIXELS / 2;
-    montageData.set(photoData1.subarray(0, halfHeightInPixels));
-    montageData.set(photoData2.subarray(halfHeightInPixels), halfHeightInPixels);
     return montageData;
 };
 
