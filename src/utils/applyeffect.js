@@ -112,9 +112,42 @@ const zoom = (photoData, direction) => {
 };
 
 /**
+ * Scales the image down to 1/4 size and tiles it in a 2x2 grid.
+ * @param {number[]} photoData The pixel data for a photo, as an array of palette indices.
+ * @returns {number[]} A new array with the tile effect applied.
+ */
+const tile = (photoData) => {
+    const width = 128;
+    const height = 112;
+    const scaledWidth = width / 2;
+    const scaledHeight = height / 2;
+
+    // First, create the scaled-down 64x56 image using nearest-neighbor sampling.
+    const scaledData = new Array(scaledWidth * scaledHeight);
+    for (let y = 0; y < scaledHeight; y++) {
+        for (let x = 0; x < scaledWidth; x++) {
+            const sourceIndex = y * 2 * width + x * 2;
+            scaledData[y * scaledWidth + x] = photoData[sourceIndex];
+        }
+    }
+
+    // Second, create the final 128x112 image by tiling the scaled-down image.
+    const tiledData = new Array(width * height);
+    for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+            const sourceX = x % scaledWidth;
+            const sourceY = y % scaledHeight;
+            tiledData[y * width + x] = scaledData[sourceY * scaledWidth + sourceX];
+        }
+    }
+
+    return tiledData;
+};
+
+/**
  * Applies a specified visual effect to the photo data.
  * @param {number[]} photoData The pixel data for a photo, as an array of palette indices.
- * @param {'invert' | 'mirror-rtl' | 'mirror-ltr' | 'mirror-btt' | 'mirror-ttb' | 'zoom' | 'zoom-v' | 'zoom-h'} effect The name of the effect to apply.
+ * @param {'invert' | 'mirror-rtl' | 'mirror-ltr' | 'mirror-btt' | 'mirror-ttb' | 'zoom' | 'zoom-v' | 'zoom-h' | 'tile'} effect The name of the effect to apply.
  * @returns {number[]} A new array with the effect applied. Returns the original data if the effect is not recognized.
  */
 const applyEffect = (photoData, effect) => {
@@ -134,6 +167,8 @@ const applyEffect = (photoData, effect) => {
         return zoom(photoData, 'v');
     } else if (effect === 'zoom-h') {
         return zoom(photoData, 'h');
+    } else if (effect === 'tile') {
+        return tile(photoData);
     }
     return photoData;
 };
