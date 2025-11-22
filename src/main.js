@@ -7,3 +7,4 @@
 export { default as palettes } from './assets/palettes.js';
 export { default as parseSave } from './utils/parsesave.js';
 export { default as applyPalette } from './utils/applypalette.js';
+export { default as applyEffect } from './utils/applyeffect.js';
