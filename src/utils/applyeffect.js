@@ -56,33 +56,55 @@ const mirror = (photoData, direction) => {
  * Zooms into the center of the photo by 2x.
  * This crops the image to the central 64x56 area and scales it up to 128x112.
  * @param {number[]} photoData The pixel data for a photo, as an array of palette indices.
+ * @param {'center' | 'v' | 'h'} direction The direction of the zoom/stretch. 'center' for 2x zoom, 'v' for vertical, 'h' for horizontal.
  * @returns {number[]} A new array with the zoom effect applied.
  */
-const zoom = (photoData) => {
+const zoom = (photoData, direction) => {
     const width = 128;
     const height = 112;
-    const zoomFactor = 2;
-
-    const sourceWidth = width / zoomFactor; // 64
-    const sourceHeight = height / zoomFactor; // 56
-
-    const startX = (width - sourceWidth) / 2; // 32
-    const startY = (height - sourceHeight) / 2; // 28
-
     const zoomedData = new Array(width * height);
 
-    for (let y = 0; y < sourceHeight; y++) {
-        for (let x = 0; x < sourceWidth; x++) {
-            const sourcePixelIndex = (startY + y) * width + (startX + x);
-            const pixelValue = photoData[sourcePixelIndex];
+    if (direction === 'center') {
+        const sourceWidth = width / 2; // 64
+        const sourceHeight = height / 2; // 56
+        const startX = (width - sourceWidth) / 2; // 32
+        const startY = (height - sourceHeight) / 2; // 28
 
-            const outX = x * zoomFactor;
-            const outY = y * zoomFactor;
-
-            zoomedData[outY * width + outX] = pixelValue;
-            zoomedData[outY * width + (outX + 1)] = pixelValue;
-            zoomedData[(outY + 1) * width + outX] = pixelValue;
-            zoomedData[(outY + 1) * width + (outX + 1)] = pixelValue;
+        for (let y = 0; y < sourceHeight; y++) {
+            for (let x = 0; x < sourceWidth; x++) {
+                const sourcePixelIndex = (startY + y) * width + (startX + x);
+                const pixelValue = photoData[sourcePixelIndex];
+                const outX = x * 2;
+                const outY = y * 2;
+                zoomedData[outY * width + outX] = pixelValue;
+                zoomedData[outY * width + (outX + 1)] = pixelValue;
+                zoomedData[(outY + 1) * width + outX] = pixelValue;
+                zoomedData[(outY + 1) * width + (outX + 1)] = pixelValue;
+            }
+        }
+    } else if (direction === 'v') {
+        const sourceHeight = height / 2; // 56
+        const startY = (height - sourceHeight) / 2; // 28
+        for (let y = 0; y < sourceHeight; y++) {
+            for (let x = 0; x < width; x++) {
+                const sourcePixelIndex = (startY + y) * width + x;
+                const pixelValue = photoData[sourcePixelIndex];
+                const outY = y * 2;
+                zoomedData[outY * width + x] = pixelValue;
+                zoomedData[(outY + 1) * width + x] = pixelValue;
+            }
+        }
+    } else if (direction === 'h') {
+        const sourceWidth = width / 2; // 64
+        const startX = (width - sourceWidth) / 2; // 32
+        for (let y = 0; y < height; y++) {
+            for (let x = 0; x < sourceWidth; x++) {
+                const sourcePixelIndex = y * width + (startX + x);
+                const pixelValue = photoData[sourcePixelIndex];
+                const outX = x * 2;
+                zoomedData[y * width + outX] = pixelValue;
+                zoomedData[y * width + outX + 1] = pixelValue;
+            }
         }
     }
 
@@ -92,7 +114,7 @@ const zoom = (photoData) => {
 /**
  * Applies a specified visual effect to the photo data.
  * @param {number[]} photoData The pixel data for a photo, as an array of palette indices.
- * @param {'invert' | 'mirror-rtl' | 'mirror-ltr' | 'mirror-btt' | 'mirror-ttb' | 'zoom'} effect The name of the effect to apply.
+ * @param {'invert' | 'mirror-rtl' | 'mirror-ltr' | 'mirror-btt' | 'mirror-ttb' | 'zoom' | 'zoom-v' | 'zoom-h'} effect The name of the effect to apply.
  * @returns {number[]} A new array with the effect applied. Returns the original data if the effect is not recognized.
  */
 const applyEffect = (photoData, effect) => {
@@ -107,7 +129,11 @@ const applyEffect = (photoData, effect) => {
     } else if (effect === 'mirror-ttb') {
         return mirror(photoData, 'ttb');
     } else if (effect === 'zoom') {
-        return zoom(photoData);
+        return zoom(photoData, 'center');
+    } else if (effect === 'zoom-v') {
+        return zoom(photoData, 'v');
+    } else if (effect === 'zoom-h') {
+        return zoom(photoData, 'h');
     }
     return photoData;
 };
