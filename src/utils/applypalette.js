@@ -1,14 +1,48 @@
-const applyPalette = (photoData, palette) => {
+const reorderPalette = (palette, effect) => {
+    let palOrder;
+    let orderedMainPalette = [];
+
+    switch (effect) {
+        case 'i':
+        case 'invert':
+            palOrder = [3, 2, 1, 0];
+            break;
+        case 'pa':
+            palOrder = [3, 1, 2, 0];
+            break;
+        case 'pb':
+            palOrder = [0, 2, 1, 3];
+            break;
+        case 'pc':
+            palOrder = [0, 3, 2, 1];
+            break;
+        case 'pd':
+            palOrder = [2, 1, 0, 3];
+            break;
+        default:
+            palOrder = [0, 1, 2, 3];
+    }
+
+    for (let i = 0; i < 4; i++) {
+        orderedMainPalette[i] = palette[palOrder[i]];
+    }
+
+    return orderedMainPalette;
+};
+
+const applyPalette = (photoData, palette, paletteOrder) => {
     const imgData = new Uint8ClampedArray(photoData.length * 4);
+
+    const orderedPalette = reorderPalette(palette, paletteOrder);
 
     for (let i = 0; i < photoData.length; i++) {
         const val = photoData[i];
-        const color = palette[val];
+        const color = orderedPalette[val];
         const pixelIndex = i * 4;
         imgData[pixelIndex + 0] = color.r;
         imgData[pixelIndex + 1] = color.g;
         imgData[pixelIndex + 2] = color.b;
-        imgData[pixelIndex + 3] = 255; // Alpha
+        imgData[pixelIndex + 3] = 255;
     }
 
     return imgData;
