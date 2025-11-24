@@ -8,16 +8,16 @@ const reorderPalette = (palette, effect) => {
             palOrder = [3, 2, 1, 0];
             break;
         case 'pa':
-            palOrder = [3, 1, 2, 0];
+            palOrder = [2, 3, 0, 1];
             break;
         case 'pb':
-            palOrder = [0, 2, 1, 3];
+            palOrder = [3, 1, 2, 0];
             break;
         case 'pc':
-            palOrder = [0, 3, 2, 1];
+            palOrder = [1, 0, 3, 2];
             break;
         case 'pd':
-            palOrder = [2, 1, 0, 3];
+            palOrder = [0, 2, 1, 3];
             break;
         default:
             palOrder = [0, 1, 2, 3];
