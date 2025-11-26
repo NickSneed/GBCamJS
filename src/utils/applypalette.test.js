@@ -132,20 +132,20 @@ describe('applyPalette', () => {
             const palette = palettes['test-palette'];
 
             // The original data [0, 1, 2, 3] should be mapped to the 'pa' reordered palette.
-            // Original palette: [black, d-grey, l-grey, white]
-            // 'pa' order: [3, 1, 2, 0] -> [white, d-grey, l-grey, black]
-            // So, 0 -> white, 1 -> d-grey, 2 -> l-grey, 3 -> black
+            // Original palette: [black(0), d-grey(1), l-grey(2), white(3)]
+            // 'pa' order from code: [2, 3, 0, 1] -> [l-grey, white, black, d-grey]
+            // So, 0->l-grey, 1->white, 2->black, 3->d-grey
             const result = applyPalette(photoData, palette, 'pa');
 
             const expectedPixels = new Uint8ClampedArray([
-                // 0 -> white
-                255, 255, 255, 255,
-                // 1 -> dark grey
-                85, 85, 85, 255,
-                // 2 -> light grey
+                // 0 -> l-grey
                 170, 170, 170, 255,
-                // 3 -> black
-                0, 0, 0, 255
+                // 1 -> white
+                255, 255, 255, 255,
+                // 2 -> black
+                0, 0, 0, 255,
+                // 3 -> d-grey
+                85, 85, 85, 255
             ]);
 
             expect(result).toEqual(expectedPixels);
@@ -155,20 +155,20 @@ describe('applyPalette', () => {
             const photoData = [0, 1, 2, 3];
             const palette = palettes['test-palette'];
 
-            // Original palette: [black, d-grey, l-grey, white]
-            // 'pb' order: [0, 2, 1, 3] -> [black, l-grey, d-grey, white]
-            // So, 0 -> black, 1 -> l-grey, 2 -> d-grey, 3 -> white
+            // Original palette: [black(0), d-grey(1), l-grey(2), white(3)]
+            // 'pb' order from code: [3, 1, 2, 0] -> [white, d-grey, l-grey, black]
+            // So, 0->white, 1->d-grey, 2->l-grey, 3->black
             const result = applyPalette(photoData, palette, 'pb');
 
             const expectedPixels = new Uint8ClampedArray([
-                // 0 -> black
-                0, 0, 0, 255,
-                // 1 -> light grey
-                170, 170, 170, 255,
-                // 2 -> dark grey
+                // 0 -> white
+                255, 255, 255, 255,
+                // 1 -> d-grey
                 85, 85, 85, 255,
-                // 3 -> white
-                255, 255, 255, 255
+                // 2 -> l-grey
+                170, 170, 170, 255,
+                // 3 -> black
+                0, 0, 0, 255
             ]);
 
             expect(result).toEqual(expectedPixels);
@@ -178,20 +178,20 @@ describe('applyPalette', () => {
             const photoData = [0, 1, 2, 3];
             const palette = palettes['test-palette'];
 
-            // Original palette: [black, d-grey, l-grey, white]
-            // 'pc' order: [0, 3, 2, 1] -> [black, white, l-grey, d-grey]
-            // So, 0 -> black, 1 -> white, 2 -> l-grey, 3 -> d-grey
+            // Original palette: [black(0), d-grey(1), l-grey(2), white(3)]
+            // 'pc' order from code: [1, 0, 3, 2] -> [d-grey, black, white, l-grey]
+            // So, 0->d-grey, 1->black, 2->white, 3->l-grey
             const result = applyPalette(photoData, palette, 'pc');
 
             const expectedPixels = new Uint8ClampedArray([
-                // 0 -> black
+                // 0 -> d-grey
+                85, 85, 85, 255,
+                // 1 -> black
                 0, 0, 0, 255,
-                // 1 -> white
+                // 2 -> white
                 255, 255, 255, 255,
-                // 2 -> light grey
-                170, 170, 170, 255,
-                // 3 -> dark grey
-                85, 85, 85, 255
+                // 3 -> l-grey
+                170, 170, 170, 255
             ]);
 
             expect(result).toEqual(expectedPixels);
@@ -201,12 +201,21 @@ describe('applyPalette', () => {
             const photoData = [0, 1, 2, 3];
             const palette = palettes['test-palette'];
 
-            // Original palette: [black, d-grey, l-grey, white]
-            // 'pd' order: [2, 1, 0, 3] -> [l-grey, d-grey, black, white]
-            // So, 0 -> l-grey, 1 -> d-grey, 2 -> black, 3 -> white
+            // Original palette: [black(0), d-grey(1), l-grey(2), white(3)]
+            // 'pd' order from code: [0, 2, 1, 3] -> [black, l-grey, d-grey, white]
+            // So, 0->black, 1->l-grey, 2->d-grey, 3->white
             const result = applyPalette(photoData, palette, 'pd');
 
-            const expectedPixels = new Uint8ClampedArray([170, 170, 170, 255, 85, 85, 85, 255, 0, 0, 0, 255, 255, 255, 255, 255]);
+            const expectedPixels = new Uint8ClampedArray([
+                // 0 -> black
+                0, 0, 0, 255,
+                // 1 -> l-grey
+                170, 170, 170, 255,
+                // 2 -> d-grey
+                85, 85, 85, 255,
+                // 3 -> white
+                255, 255, 255, 255
+            ]);
 
             expect(result).toEqual(expectedPixels);
         });
