@@ -1,7 +1,7 @@
 {
     "name": "gbcam-js",
     "version": "1.0.0",
-    "description": "A collection of Javascript tools and assets for the Game Boy Camera™.",
+    "description": "A collection of Javascript tools and assets for Game Boy Camera save files™.",
     "type": "module",
     "main": "main.js",
     "exports": {
