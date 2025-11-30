@@ -15,8 +15,8 @@
         "test:coverage": "vitest run --coverage"
     },
     "keywords": [
-        "gameboy",
-        "gameboy camera",
+        "game boy",
+        "game boy camera",
         "gbcam",
         "palettes"
     ],
