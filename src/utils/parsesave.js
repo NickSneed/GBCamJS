@@ -125,11 +125,10 @@ const convertSection = (saveData, start, end, offset = 0) => {
         if (saveData[addr]) {
             str += gbcCharToAscii(saveData[addr]);
         } else {
-            console.log(saveData[addr], addr);
             str += ' ';
         }
     }
-    return str;
+    return str.trimEnd();
 };
 
 /**
