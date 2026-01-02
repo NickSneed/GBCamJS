@@ -107,7 +107,6 @@ export const gbcCharToAscii = (code) => {
     if (code >= CONSTANTS.GBC_CHAR_CODE_START && code <= CONSTANTS.GBC_CHAR_CODE_END) {
         return chars[code - CONSTANTS.GBC_CHAR_CODE_START];
     }
-    console.log(code);
     return ' ';
 };
 
@@ -123,8 +122,10 @@ export const gbcCharToAscii = (code) => {
 const convertSection = (saveData, start, end, offset = 0) => {
     let str = '';
     for (let addr = start + offset; addr <= end + offset; addr++) {
-        if (saveData[addr] || saveData[addr] === ' ') {
+        if (saveData[addr]) {
             str += gbcCharToAscii(saveData[addr]);
+        } else {
+            str += ' ';
         }
     }
     return str;
