@@ -50,6 +50,43 @@ https://github.com/raphnet/gbcam2png
 
 https://github.com/Raphael-Boichot/Inject-pictures-in-your-Game-Boy-Camera-saves
 
+### `applyPalette(photoData, palette, paletteOrder)`
+
+Converts raw pixel data into an RGBA array using a specific palette.
+
+-   **`photoData`**: `number[]` - The array of palette indices (0-3) from an image.
+-   **`palette`**: `object[]` - An array of 4 color objects (e.g., `[{r: 0, g: 0, b: 0}, ...]`).
+-   **`paletteOrder`**: `string` (optional) - Reorders the palette. Options: `'invert'`, `'pa'`, `'pb'`, `'pc'`, `'pd'`.
+-   **Returns**: `Uint8ClampedArray` - The RGBA pixel data (4 bytes per pixel).
+
+!Game Boy Camera Palettes
+
+### `applyEffect(photoData, effect)`
+
+Applies a visual effect to the raw pixel data.
+
+-   **`photoData`**: `number[]` - The array of palette indices.
+-   **`effect`**: `string` - The effect to apply.
+    -   `'invert'`
+    -   `'mirror-rtl'`, `'mirror-ltr'`, `'mirror-btt'`, `'mirror-ttb'`
+    -   `'zoom'`, `'zoom-v'`, `'zoom-h'`
+    -   `'tile'`
+-   **Returns**: `number[]` - The modified pixel data.
+
+### `createMontage(photos, splitType)`
+
+Combines multiple photos into a single 128x112 image.
+
+-   **`photos`**: `number[][]` - An array of photo data arrays.
+-   **`splitType`**: `string` (optional) - How to arrange the photos. Default is `'horizontal'`.
+    -   `'horizontal'`, `'vertical'` (Requires 2 photos)
+    -   `'quadrant'` (Requires 2 photos)
+    -   `'four-quadrant'` (Requires 4 photos)
+    -   `'horizontal-2/3'` (Requires 2 photos)
+    -   `'horizontal-bars'` (Requires 3 photos)
+    -   `'border'` (Requires 2 photos)
+-   **Returns**: `Uint8Array` - The combined pixel data.
+
 ## Frames
 
 The `frameId` property in the image object corresponds to the index of the frame used for the photo.
@@ -59,12 +96,6 @@ The `frameId` property in the image object corresponds to the index of the frame
 | Raw Image  | `128` | `112`  | The raw sensor data size.                            |
 | Standard   | `160` | `144`  | The size of the image with a standard frame applied. |
 | Wild       | `160` | `244`  | The size of the image with a wild frame applied.     |
-
-### Palettes
-
-Palettes can be applied to the image data using a canvas.
-
-!Game Boy Camera Palettes
 
 ## Related Tools
 

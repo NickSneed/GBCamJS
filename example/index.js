@@ -5,7 +5,7 @@ async function main() {
     try {
         // Read the raw save file data. In Node.js, this returns a Buffer,
         // which is a subclass of Uint8Array.
-        const saveData = await fs.readFile('./your-save-file.sav');
+        const saveData = await fs.readFile('./save.sav');
 
         // Parse the data
         const parsedData = parseSave(saveData);
