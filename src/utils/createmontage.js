@@ -2,6 +2,12 @@ const WIDTH = 128;
 const HEIGHT = 112;
 const TOTAL_PIXELS = WIDTH * HEIGHT;
 
+/**
+ * Creates a montage where the top half is from the first photo and the bottom half is from the second photo.
+ * @param {Uint8Array} photoData1 The pixel data for the first photo.
+ * @param {Uint8Array} photoData2 The pixel data for the second photo.
+ * @returns {Uint8Array} The combined pixel data.
+ */
 const createHorizontalMontage = (photoData1, photoData2) => {
     const montageData = new Uint8Array(TOTAL_PIXELS);
     const halfHeightInPixels = TOTAL_PIXELS / 2;
@@ -10,6 +16,12 @@ const createHorizontalMontage = (photoData1, photoData2) => {
     return montageData;
 };
 
+/**
+ * Creates a montage where the left half is from the first photo and the right half is from the second photo.
+ * @param {Uint8Array} photoData1 The pixel data for the first photo.
+ * @param {Uint8Array} photoData2 The pixel data for the second photo.
+ * @returns {Uint8Array} The combined pixel data.
+ */
 const createVerticalMontage = (photoData1, photoData2) => {
     const montageData = new Uint8Array(TOTAL_PIXELS);
     const halfWidth = WIDTH / 2;
@@ -22,6 +34,14 @@ const createVerticalMontage = (photoData1, photoData2) => {
     return montageData;
 };
 
+/**
+ * Creates a checkerboard quadrant montage from two photos.
+ * Top-Left: Photo 1, Top-Right: Photo 2
+ * Bottom-Left: Photo 2, Bottom-Right: Photo 1
+ * @param {Uint8Array} photoData1 The pixel data for the first photo.
+ * @param {Uint8Array} photoData2 The pixel data for the second photo.
+ * @returns {Uint8Array} The combined pixel data.
+ */
 const createQuadrantMontage = (photoData1, photoData2) => {
     const montageData = new Uint8Array(TOTAL_PIXELS);
     const halfWidth = WIDTH / 2;
@@ -44,6 +64,13 @@ const createQuadrantMontage = (photoData1, photoData2) => {
     return montageData;
 };
 
+/**
+ * Creates a quadrant montage from four different photos.
+ * Top-Left: Photo 1, Top-Right: Photo 2
+ * Bottom-Left: Photo 3, Bottom-Right: Photo 4
+ * @param {Uint8Array[]} photos An array of 4 pixel data arrays.
+ * @returns {Uint8Array} The combined pixel data.
+ */
 const createFourPhotoQuadrantMontage = (photos) => {
     const [photoData1, photoData2, photoData3, photoData4] = photos;
     const montageData = new Uint8Array(TOTAL_PIXELS);
@@ -67,6 +94,13 @@ const createFourPhotoQuadrantMontage = (photos) => {
     return montageData;
 };
 
+/**
+ * Creates a montage with a 2/3 horizontal split.
+ * The top 80 pixels height is from the first photo, and the bottom rest is from the second photo.
+ * @param {Uint8Array} photoData1 The pixel data for the first photo.
+ * @param {Uint8Array} photoData2 The pixel data for the second photo.
+ * @returns {Uint8Array} The combined pixel data.
+ */
 const createHorizontalTwoThirdsMontage = (photoData1, photoData2) => {
     const montageData = new Uint8Array(TOTAL_PIXELS);
     const topHeight = 80;
@@ -77,6 +111,14 @@ const createHorizontalTwoThirdsMontage = (photoData1, photoData2) => {
     return montageData;
 };
 
+/**
+ * Creates a montage with three horizontal bars.
+ * Top bar (32px): Photo 2
+ * Middle bar (48px): Photo 1
+ * Bottom bar (32px): Photo 3
+ * @param {Uint8Array[]} photos An array of 3 pixel data arrays.
+ * @returns {Uint8Array} The combined pixel data.
+ */
 const createHorizontalBarsMontage = (photos) => {
     const [photoData1, photoData2, photoData3] = photos;
     const montageData = new Uint8Array(TOTAL_PIXELS);
@@ -96,6 +138,13 @@ const createHorizontalBarsMontage = (photos) => {
     return montageData;
 };
 
+/**
+ * Creates a montage where the first photo is placed in the center of the second photo.
+ * The inner image is 80x64 pixels.
+ * @param {Uint8Array} photoData1 The inner photo pixel data.
+ * @param {Uint8Array} photoData2 The outer/border photo pixel data.
+ * @returns {Uint8Array} The combined pixel data.
+ */
 const createBorderMontage = (photoData1, photoData2) => {
     const montageData = new Uint8Array(photoData2); // Start with the border image
     const innerWidth = 80;
@@ -114,27 +163,28 @@ const createBorderMontage = (photoData1, photoData2) => {
     return montageData;
 };
 
+/**
+ * Converts the input data to a Uint8Array if it isn't one already.
+ * @param {Uint8Array|number[]} data The data to convert.
+ * @returns {Uint8Array} The data as a Uint8Array.
+ */
 const toUint8 = (data) => {
     if (data instanceof Uint8Array) return data;
     return new Uint8Array(data);
 };
 
 /**
- * Creates a new 128x112 image by combining two photos.
- * The left half of the new image is taken from the first photo,
- * and the right half is taken from the second photo.
- *
+ * Creates a new 128x112 image by combining multiple photos based on the specified montage type.
  * @param {Array<Uint8Array|number[]>} photos An array containing photo data arrays.
- * Each photo data is a flat array of 14336 (128x112) pixel values (0-3).
+ * @param {'horizontal' | 'vertical' | 'quadrant' | 'four-quadrant' | 'horizontal-2/3' | 'horizontal-bars' | 'border'} montageType The type of split for the montage.
  * @returns {Uint8Array} A new flat array of 14336 pixel values for the combined image.
- * @param {'horizontal' | 'vertical' | 'quadrant' | 'four-quadrant' | 'horizontal-2/3' | 'horizontal-bars' | 'border'} splitType The type of split for the montage.
  */
-const createMontage = (photos, splitType = 'horizontal') => {
+const createMontage = (photos, montageType = 'horizontal') => {
     if (!photos) {
         return new Uint8Array(0);
     }
 
-    switch (splitType) {
+    switch (montageType) {
         case 'four-quadrant':
             if (photos.length < 4 || photos.some((p) => !p)) {
                 return new Uint8Array(0);
@@ -157,10 +207,10 @@ const createMontage = (photos, splitType = 'horizontal') => {
             const photoData1 = toUint8(photos[0]);
             const photoData2 = toUint8(photos[1]);
 
-            if (splitType === 'vertical') return createVerticalMontage(photoData1, photoData2);
-            if (splitType === 'quadrant') return createQuadrantMontage(photoData1, photoData2);
-            if (splitType === 'border') return createBorderMontage(photoData1, photoData2);
-            if (splitType === 'horizontal-2/3') {
+            if (montageType === 'vertical') return createVerticalMontage(photoData1, photoData2);
+            if (montageType === 'quadrant') return createQuadrantMontage(photoData1, photoData2);
+            if (montageType === 'border') return createBorderMontage(photoData1, photoData2);
+            if (montageType === 'horizontal-2/3') {
                 return createHorizontalTwoThirdsMontage(photoData1, photoData2);
             }
             return createHorizontalMontage(photoData1, photoData2); // Default to horizontal

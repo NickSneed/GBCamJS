@@ -73,12 +73,12 @@ Applies a visual effect to the raw pixel data.
     -   `'tile'`
 -   **Returns**: `Uint8Array` - The modified pixel data.
 
-### `createMontage(photos, splitType)`
+### `createMontage(photos, montageType)`
 
 Combines multiple photos into a single 128x112 image.
 
 -   **`photos`**: `number[][]` - An array of photo data arrays.
--   **`splitType`**: `string` (optional) - How to arrange the photos. Default is `'horizontal'`.
+-   **`montageType`**: `string` (optional) - How to arrange the photos. Default is `'horizontal'`.
     -   `'horizontal'`, `'vertical'` (Requires 2 photos)
     -   `'quadrant'` (Requires 2 photos)
     -   `'four-quadrant'` (Requires 4 photos)
