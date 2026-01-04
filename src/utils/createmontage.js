@@ -114,32 +114,37 @@ const createBorderMontage = (photoData1, photoData2) => {
     return montageData;
 };
 
+const toUint8 = (data) => {
+    if (data instanceof Uint8Array) return data;
+    return new Uint8Array(data);
+};
+
 /**
  * Creates a new 128x112 image by combining two photos.
  * The left half of the new image is taken from the first photo,
  * and the right half is taken from the second photo.
  *
- * @param {Array<number[]>} photos An array containing two photo data arrays.
+ * @param {Array<Uint8Array|number[]>} photos An array containing photo data arrays.
  * Each photo data is a flat array of 14336 (128x112) pixel values (0-3).
- * @returns {number[]} A new flat array of 14336 pixel values for the combined image.
+ * @returns {Uint8Array} A new flat array of 14336 pixel values for the combined image.
  * @param {'horizontal' | 'vertical' | 'quadrant' | 'four-quadrant' | 'horizontal-2/3' | 'horizontal-bars' | 'border'} splitType The type of split for the montage.
  */
 const createMontage = (photos, splitType = 'horizontal') => {
     if (!photos) {
-        return [];
+        return new Uint8Array(0);
     }
 
     switch (splitType) {
         case 'four-quadrant':
             if (photos.length < 4 || photos.some((p) => !p)) {
-                return [];
+                return new Uint8Array(0);
             }
-            return createFourPhotoQuadrantMontage(photos);
+            return createFourPhotoQuadrantMontage(photos.map(toUint8));
         case 'horizontal-bars':
             if (photos.length < 3 || photos.slice(0, 3).some((p) => !p)) {
-                return [];
+                return new Uint8Array(0);
             }
-            return createHorizontalBarsMontage(photos);
+            return createHorizontalBarsMontage(photos.map(toUint8));
         case 'horizontal':
         case 'vertical':
         case 'quadrant':
@@ -147,9 +152,11 @@ const createMontage = (photos, splitType = 'horizontal') => {
         case 'horizontal-2/3':
         default: {
             if (photos.length < 2 || !photos[0] || !photos[1]) {
-                return [];
+                return new Uint8Array(0);
             }
-            const [photoData1, photoData2] = photos;
+            const photoData1 = toUint8(photos[0]);
+            const photoData2 = toUint8(photos[1]);
+
             if (splitType === 'vertical') return createVerticalMontage(photoData1, photoData2);
             if (splitType === 'quadrant') return createQuadrantMontage(photoData1, photoData2);
             if (splitType === 'border') return createBorderMontage(photoData1, photoData2);

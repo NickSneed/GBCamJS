@@ -18,19 +18,19 @@ describe('createMontage', () => {
 
     describe('Edge Cases', () => {
         it('should return an empty array if no photos are provided', () => {
-            expect(createMontage()).toEqual([]);
-            expect(createMontage(null)).toEqual([]);
+            expect(createMontage()).toEqual(new Uint8Array(0));
+            expect(createMontage(null)).toEqual(new Uint8Array(0));
         });
 
         it('should return an empty array if not enough photos are provided for the split type', () => {
-            expect(createMontage([photoData1], 'horizontal')).toEqual([]);
-            expect(createMontage([photoData1, photoData2], 'four-quadrant')).toEqual([]);
-            expect(createMontage([photoData1, photoData2], 'horizontal-bars')).toEqual([]);
+            expect(createMontage([photoData1], 'horizontal')).toEqual(new Uint8Array(0));
+            expect(createMontage([photoData1, photoData2], 'four-quadrant')).toEqual(new Uint8Array(0));
+            expect(createMontage([photoData1, photoData2], 'horizontal-bars')).toEqual(new Uint8Array(0));
         });
 
         it('should return an empty array if any required photo is null or undefined', () => {
-            expect(createMontage([photoData1, null], 'vertical')).toEqual([]);
-            expect(createMontage([photoData1, photoData2, undefined], 'horizontal-bars')).toEqual([]);
+            expect(createMontage([photoData1, null], 'vertical')).toEqual(new Uint8Array(0));
+            expect(createMontage([photoData1, photoData2, undefined], 'horizontal-bars')).toEqual(new Uint8Array(0));
         });
     });
 
