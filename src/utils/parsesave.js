@@ -103,7 +103,7 @@ export const getIsDeleted = (saveData, photoIndex) => {
  * @param {number} photoIndex The index of the photo to check.
  * @returns {number} The index of the photo
  */
-export const getphotoIndex = (saveData, photoIndex) => {
+export const getPhotoIndex = (saveData, photoIndex) => {
     if (saveData[OFFSETS.PHOTO_DELETED_FLAGS + photoIndex] === CONSTANTS.DELETED_FLAG_VALUE) {
         return 0;
     }
