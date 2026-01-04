@@ -105,7 +105,7 @@ export const getIsDeleted = (saveData, photoIndex) => {
  */
 export const getPhotoIndex = (saveData, photoIndex) => {
     if (saveData[OFFSETS.PHOTO_DELETED_FLAGS + photoIndex] === CONSTANTS.DELETED_FLAG_VALUE) {
-        return 0;
+        return -1;
     }
     return saveData[OFFSETS.PHOTO_DELETED_FLAGS + photoIndex];
 };
