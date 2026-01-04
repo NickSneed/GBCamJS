@@ -47,7 +47,7 @@ const isPhotoDataEmpty = (photoData) => {
  * It reads the 2bpp tile data and maps it to palette indices (0-3).
  * @param {Uint8Array} saveData The raw save data for the Game Boy Camera.
  * @param {number} photoIndex The index of the photo to extract (0-29).
- * @returns {{width: number, height: number, photoData: number[]}} An object containing the image dimensions and a flat array of palette indices.
+ * @returns {{width: number, height: number, photoData: Uint8Array}} An object containing the image dimensions and a flat array of palette indices.
  */
 export const getImgData = (saveData, photoIndex) => {
     const photoOffset = OFFSETS.PHOTO_DATA_START + photoIndex * SIZES.PHOTO_BLOCK;

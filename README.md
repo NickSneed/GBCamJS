@@ -71,7 +71,7 @@ Applies a visual effect to the raw pixel data.
     -   `'mirror-rtl'`, `'mirror-ltr'`, `'mirror-btt'`, `'mirror-ttb'`
     -   `'zoom'`, `'zoom-v'`, `'zoom-h'`
     -   `'tile'`
--   **Returns**: `number[]` - The modified pixel data.
+-   **Returns**: `Uint8Array` - The modified pixel data.
 
 ### `createMontage(photos, splitType)`
 
