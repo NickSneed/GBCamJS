@@ -2,6 +2,7 @@ const reorderPalette = (palette, effect) => {
     let palOrder;
     let orderedMainPalette = [];
 
+    // These match the palette options in the shooting menu
     switch (effect) {
         case 'i':
         case 'invert':
@@ -11,16 +12,16 @@ const reorderPalette = (palette, effect) => {
             palOrder = [2, 3, 0, 1];
             break;
         case 'pb':
-            palOrder = [3, 1, 2, 0];
-            break;
-        case 'pc':
-            palOrder = [1, 0, 3, 2];
-            break;
-        case 'pd':
             palOrder = [0, 2, 1, 3];
             break;
+        case 'pc':
+            palOrder = [3, 1, 2, 0];
+            break;
+        case 'pd':
+            palOrder = [1, 2, 3, 0];
+            break;
         default:
-            palOrder = [0, 1, 2, 3];
+            palOrder = [3, 0, 1, 2];
     }
 
     for (let i = 0; i < 4; i++) {
