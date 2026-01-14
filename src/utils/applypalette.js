@@ -9,19 +9,19 @@ const reorderPalette = (palette, effect) => {
             palOrder = [3, 2, 1, 0];
             break;
         case 'pa':
-            palOrder = [2, 3, 0, 1];
-            break;
-        case 'pb':
             palOrder = [0, 2, 1, 3];
             break;
-        case 'pc':
+        case 'pb':
             palOrder = [3, 1, 2, 0];
             break;
-        case 'pd':
+        case 'pc':
             palOrder = [1, 2, 3, 0];
             break;
-        default:
+        case 'pd':
             palOrder = [3, 0, 1, 2];
+            break;
+        default:
+            palOrder = [0, 1, 2, 3];
     }
 
     for (let i = 0; i < 4; i++) {
