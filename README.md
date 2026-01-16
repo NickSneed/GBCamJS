@@ -1,11 +1,11 @@
-# GBCamJS
+# TrickLensJS
 
 A collection of JavaScript tools and assets for the Game Boy Camera™.
 
 ## Installation
 
 ```bash
-npm install gbcam-js
+npm install tricklens-js
 ```
 
 ## Save parsing
@@ -99,7 +99,7 @@ The `frameId` property in the image object corresponds to the index of the frame
 
 ## Related Tools
 
--   GBCamStudio
--   GBCamExtractionTool
+-   TrickLensStudio
+-   TrickLensCLI
 
 _Game Boy™, Game Boy Camera™, Game Boy Color™, and Super Game Boy™ are registered trademarks of Nintendo._

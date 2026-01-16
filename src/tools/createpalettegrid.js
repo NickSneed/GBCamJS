@@ -7,7 +7,7 @@
 import path from 'path';
 import fs from 'fs';
 import { createCanvas } from 'canvas';
-import { palettes as p } from 'gbcam-js';
+import { palettes as p } from 'tricklens-js';
 
 const palettes = Object.entries(p);
 const palettesPerRow = 4;

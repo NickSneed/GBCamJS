@@ -1,5 +1,5 @@
 {
-    "name": "gbcam-js",
+    "name": "tricklens-js",
     "version": "1.0.0",
     "description": "A collection of Javascript tools and assets for Game Boy Camera save files™.",
     "type": "module",
@@ -17,7 +17,7 @@
     "keywords": [
         "game boy",
         "game boy camera",
-        "gbcam",
+        "tricklens",
         "palettes"
     ],
     "author": "",
