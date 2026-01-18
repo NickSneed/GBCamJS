@@ -5,7 +5,7 @@ A collection of JavaScript tools and assets for the Game Boy Camera™.
 ## Installation
 
 ```bash
-npm install tricklens-js
+npm i github:NickSneed/TrickLensJS
 ```
 
 ## Save parsing
@@ -20,8 +20,8 @@ See the example dir for a sample node app.
 
 The main export. Parses the entire Game Boy Camera save file.
 
--   **`saveData`**: `Uint8Array | ArrayBuffer` - The raw binary data from the `.sav` file. Can be a Node.js `Buffer`, a standard `Uint8Array`, or an `ArrayBuffer`.
--   **Returns**: `object` - An object containing the parsed save data.
+- **`saveData`**: `Uint8Array | ArrayBuffer` - The raw binary data from the `.sav` file. Can be a Node.js `Buffer`, a standard `Uint8Array`, or an `ArrayBuffer`.
+- **Returns**: `object` - An object containing the parsed save data.
 
 The returned object has the following structure:
 
@@ -54,10 +54,10 @@ https://github.com/Raphael-Boichot/Inject-pictures-in-your-Game-Boy-Camera-saves
 
 Converts raw pixel data into an RGBA array using a specific palette.
 
--   **`photoData`**: `number[]` - The array of palette indices (0-3) from an image.
--   **`palette`**: `object[]` - An array of 4 color objects (e.g., `[{r: 0, g: 0, b: 0}, ...]`).
--   **`paletteOrder`**: `string` (optional) - Reorders the palette. Options: `'invert'`, `'pa'`, `'pb'`, `'pc'`, `'pd'`.
--   **Returns**: `Uint8ClampedArray` - The RGBA pixel data (4 bytes per pixel).
+- **`photoData`**: `number[]` - The array of palette indices (0-3) from an image.
+- **`palette`**: `object[]` - An array of 4 color objects (e.g., `[{r: 0, g: 0, b: 0}, ...]`).
+- **`paletteOrder`**: `string` (optional) - Reorders the palette. Options: `'invert'`, `'pa'`, `'pb'`, `'pc'`, `'pd'`.
+- **Returns**: `Uint8ClampedArray` - The RGBA pixel data (4 bytes per pixel).
 
 !Game Boy Camera Palettes
 
@@ -65,27 +65,27 @@ Converts raw pixel data into an RGBA array using a specific palette.
 
 Applies a visual effect to the raw pixel data.
 
--   **`photoData`**: `number[]` - The array of palette indices.
--   **`effect`**: `string` - The effect to apply.
-    -   `'invert'`
-    -   `'mirror-rtl'`, `'mirror-ltr'`, `'mirror-btt'`, `'mirror-ttb'`
-    -   `'zoom'`, `'zoom-v'`, `'zoom-h'`
-    -   `'tile'`
--   **Returns**: `Uint8Array` - The modified pixel data.
+- **`photoData`**: `number[]` - The array of palette indices.
+- **`effect`**: `string` - The effect to apply.
+    - `'invert'`
+    - `'mirror-rtl'`, `'mirror-ltr'`, `'mirror-btt'`, `'mirror-ttb'`
+    - `'zoom'`, `'zoom-v'`, `'zoom-h'`
+    - `'tile'`
+- **Returns**: `Uint8Array` - The modified pixel data.
 
 ### `createMontage(photos, montageType)`
 
 Combines multiple photos into a single 128x112 image.
 
--   **`photos`**: `number[][]` - An array of photo data arrays.
--   **`montageType`**: `string` (optional) - How to arrange the photos. Default is `'horizontal'`.
-    -   `'horizontal'`, `'vertical'` (Requires 2 photos)
-    -   `'quadrant'` (Requires 2 photos)
-    -   `'four-quadrant'` (Requires 4 photos)
-    -   `'horizontal-2/3'` (Requires 2 photos)
-    -   `'horizontal-bars'` (Requires 3 photos)
-    -   `'border'` (Requires 2 photos)
--   **Returns**: `Uint8Array` - The combined pixel data.
+- **`photos`**: `number[][]` - An array of photo data arrays.
+- **`montageType`**: `string` (optional) - How to arrange the photos. Default is `'horizontal'`.
+    - `'horizontal'`, `'vertical'` (Requires 2 photos)
+    - `'quadrant'` (Requires 2 photos)
+    - `'four-quadrant'` (Requires 4 photos)
+    - `'horizontal-2/3'` (Requires 2 photos)
+    - `'horizontal-bars'` (Requires 3 photos)
+    - `'border'` (Requires 2 photos)
+- **Returns**: `Uint8Array` - The combined pixel data.
 
 ## Frames
 
@@ -99,7 +99,7 @@ The `frameId` property in the image object corresponds to the index of the frame
 
 ## Related Tools
 
--   TrickLensStudio
--   TrickLensCLI
+- TrickLensStudio
+- TrickLensCLI
 
 _Game Boy™, Game Boy Camera™, Game Boy Color™, and Super Game Boy™ are registered trademarks of Nintendo._
