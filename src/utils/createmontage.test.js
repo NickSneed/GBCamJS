@@ -206,4 +206,18 @@ describe('createMontage', () => {
             expect(result[(offsetY - 1) * WIDTH + offsetX]).toBe(2);
         });
     });
+
+    describe('fusion montage', () => {
+        it('should alternate lines between two photos', () => {
+            const result = createMontage([pixels1, pixels2], 'fusion');
+
+            for (let y = 0; y < HEIGHT; y++) {
+                for (let x = 0; x < WIDTH; x++) {
+                    const pixelIndex = y * WIDTH + x;
+                    const expectedValue = y % 2 === 0 ? 1 : 2;
+                    expect(result[pixelIndex]).toBe(expectedValue);
+                }
+            }
+        });
+    });
 });

@@ -164,6 +164,23 @@ const createBorderMontage = (pixels1, pixels2) => {
 };
 
 /**
+ * Creates a fusion montage where lines alternate between the first and second photo.
+ * @param {Uint8Array} pixels1 The pixel data for the first photo.
+ * @param {Uint8Array} pixels2 The pixel data for the second photo.
+ * @returns {Uint8Array} The combined pixel data.
+ */
+const createFusionMontage = (pixels1, pixels2) => {
+    const montageData = new Uint8Array(TOTAL_PIXELS);
+    for (let y = 0; y < HEIGHT; y++) {
+        const rowStartIndex = y * WIDTH;
+        const rowEndIndex = rowStartIndex + WIDTH;
+        const source = y % 2 === 0 ? pixels1 : pixels2;
+        montageData.set(source.subarray(rowStartIndex, rowEndIndex), rowStartIndex);
+    }
+    return montageData;
+};
+
+/**
  * Converts the input data to a Uint8Array if it isn't one already.
  * @param {Uint8Array|number[]} data The data to convert.
  * @returns {Uint8Array} The data as a Uint8Array.
@@ -176,7 +193,7 @@ const toUint8 = (data) => {
 /**
  * Creates a new 128x112 image by combining multiple photos based on the specified montage type.
  * @param {Array<Uint8Array|number[]>} photos An array containing photo data arrays.
- * @param {'horizontal' | 'vertical' | 'quadrant' | 'four-quadrant' | 'horizontal-2/3' | 'horizontal-bars' | 'border'} montageType The type of split for the montage.
+ * @param {'horizontal' | 'vertical' | 'quadrant' | 'four-quadrant' | 'horizontal-2/3' | 'horizontal-bars' | 'border' | 'fusion'} montageType The type of split for the montage.
  * @returns {Uint8Array} A new flat array of 14336 pixel values for the combined image.
  */
 const createMontage = (photos, montageType = 'horizontal') => {
@@ -199,6 +216,7 @@ const createMontage = (photos, montageType = 'horizontal') => {
         case 'vertical':
         case 'quadrant':
         case 'border':
+        case 'fusion':
         case 'horizontal-2/3':
         default: {
             if (photos.length < 2 || !photos[0] || !photos[1]) {
@@ -210,6 +228,7 @@ const createMontage = (photos, montageType = 'horizontal') => {
             if (montageType === 'vertical') return createVerticalMontage(pixels1, pixels2);
             if (montageType === 'quadrant') return createQuadrantMontage(pixels1, pixels2);
             if (montageType === 'border') return createBorderMontage(pixels1, pixels2);
+            if (montageType === 'fusion') return createFusionMontage(pixels1, pixels2);
             if (montageType === 'horizontal-2/3') {
                 return createHorizontalTwoThirdsMontage(pixels1, pixels2);
             }
