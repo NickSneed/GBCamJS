@@ -96,6 +96,7 @@ Combines multiple photos into a single 128x112 image.
     - `'horizontal-2/3'` (Requires 2 photos)
     - `'horizontal-bars'` (Requires 3 photos)
     - `'border'` (Requires 2 photos)
+    - `'fusion'` (Requires 2 photos)
 - **Returns**: `Uint8Array` - The combined pixel data.
 
 ## Frames
