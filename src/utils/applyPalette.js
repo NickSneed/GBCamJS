@@ -1,15 +1,3 @@
-import palettes from '../assets/palettes.js';
-
-/**
- * Retrieves a palette object by its ID.
- * Falls back to 'sgb2h' (Standard B&W) if the ID is not found.
- * @param {string} id The palette ID (e.g., 'sgb1a', 'gbc1').
- * @returns {object} The full palette object.
- */
-export const getPalette = (id) => {
-    return palettes[id] || palettes['sgb2h'];
-};
-
 const reorderPalette = (palette, effect) => {
     let palOrder;
     let orderedMainPalette = [];
@@ -43,11 +31,7 @@ const reorderPalette = (palette, effect) => {
     return orderedMainPalette;
 };
 
-export const applyPalette = (pixels, palette, paletteOrder) => {
-    if (!palette || !palette.colors) {
-        throw new Error(`applyPalette requires a full palette object with colors. Received: ${JSON.stringify(palette)}`);
-    }
-
+const applyPalette = (pixels, palette, paletteOrder) => {
     const imgData = new Uint8ClampedArray(pixels.length * 4);
 
     const orderedPalette = reorderPalette(palette, paletteOrder);
@@ -64,3 +48,5 @@ export const applyPalette = (pixels, palette, paletteOrder) => {
 
     return imgData;
 };
+
+export default applyPalette;
