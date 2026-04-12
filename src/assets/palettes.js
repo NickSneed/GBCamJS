@@ -425,6 +425,15 @@ const palettes = {
             { r: 0, g: 0, b: 0 }
         ]
     },
+    sepia: {
+        name: 'Sepia',
+        colors: [
+            { r: 245, g: 239, b: 188 },
+            { r: 222, g: 195, b: 149 },
+            { r: 178, g: 142, b: 110 },
+            { r: 104, g: 60, b: 52 }
+        ]
+    },
     bw1: {
         name: 'Black and White 1',
         colors: [
@@ -450,15 +459,6 @@ const palettes = {
             { r: 255, g: 255, b: 255 },
             { r: 255, g: 255, b: 255 },
             { r: 0, g: 0, b: 0 }
-        ]
-    },
-    sepia: {
-        name: 'Sepia',
-        colors: [
-            { r: 245, g: 239, b: 188 },
-            { r: 222, g: 195, b: 149 },
-            { r: 178, g: 142, b: 110 },
-            { r: 104, g: 60, b: 52 }
         ]
     },
     gbcm1: {
