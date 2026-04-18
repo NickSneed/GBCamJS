@@ -29,6 +29,15 @@ const palettes = {
             { r: 0, g: 0, b: 0 }
         ]
     },
+    green: {
+        name: 'Green',
+        colors: [
+            { r: 224, g: 233, b: 196 },
+            { r: 154, g: 165, b: 124 },
+            { r: 75, g: 86, b: 77 },
+            { r: 37, g: 37, b: 37 }
+        ]
+    },
     sepia: {
         name: 'Sepia',
         colors: [
