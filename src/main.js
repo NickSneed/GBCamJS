@@ -10,4 +10,3 @@ export { default as applyPalette } from './utils/applypalette.js';
 export { default as applyEffect } from './utils/applyeffect.js';
 export { default as applyRGB } from './utils/applyrgb.js';
 export { default as createMontage } from './utils/createmontage.js';
-export { default as rotate } from './utils/rotate.js';
