@@ -117,6 +117,5 @@ The `frameId` property in the image object corresponds to the index of the frame
 ## To Do
 
 - Add option to rotate images
-- Add saturation option to appleRGB
 
 _Game Boy™, Game Boy Camera™, Game Boy Color™, and Super Game Boy™ are registered trademarks of Nintendo._
