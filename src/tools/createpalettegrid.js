@@ -20,7 +20,7 @@ const toHex = (value) => {
 
 export const generatePaletteGridSvg = (paletteEntries, options = {}) => {
     const resolvedPalettes = Array.isArray(paletteEntries) ? paletteEntries : Object.entries(paletteEntries);
-    const { palettesPerRow = 4, swatchSize = 32, swatchGap = 4, paletteGap = 30, backgroundColor = '#000', textColor = '#fff' } = options;
+    const { palettesPerRow = 4, swatchSize = 32, swatchGap = 4, paletteGap = 30, textColor = '#fff' } = options;
 
     const numRows = Math.ceil(resolvedPalettes.length / palettesPerRow);
     const width = palettesPerRow * (swatchSize * 4 + swatchGap * 3 + paletteGap);
@@ -49,7 +49,6 @@ export const generatePaletteGridSvg = (paletteEntries, options = {}) => {
         .join('');
 
     return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
-  <rect width="100%" height="100%" fill="${backgroundColor}" />
   ${svgBody}
 </svg>`;
 };
