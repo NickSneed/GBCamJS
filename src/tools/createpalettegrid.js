@@ -1,65 +1,77 @@
 /**
- * @file This script generates a PNG image that visually represents all available color palettes.
+ * @file This script generates an SVG image that visually represents all available color palettes.
  * It arranges the palettes in a grid, where each palette is shown as a series of color swatches
- * with its name printed below. The resulting image, `palettes.png`, is saved in the `assets` directory.
+ * with its name printed below. The resulting file, palettes.svg, is saved in the assets directory.
  * This is a standalone utility script and is not part of the main application flow.
  */
-import path from 'path';
 import fs from 'fs';
-import { createCanvas } from 'canvas';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { palettes as p } from 'tricklens-js';
 
 const palettes = Object.entries(p);
-const palettesPerRow = 4;
-const swatchSize = 32;
-const swatchGap = 4;
-const paletteGap = 30;
 
-const numRows = Math.ceil(palettes.length / palettesPerRow);
-const width = palettesPerRow * (swatchSize * 4 + swatchGap * 3 + paletteGap);
-const height = numRows * (swatchSize + paletteGap);
+const escapeXml = (value) => String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
 
-const canvas = createCanvas(width, height);
-const ctx = canvas.getContext('2d');
-
-const createPNG = (data) => {
-    // Output to an 'output' sub-directory in the current working directory
-    const folderPath = path.resolve(process.cwd(), 'src/assets/');
-
-    try {
-        // Ensure the output directory exists
-        if (!fs.existsSync(folderPath)) {
-            fs.mkdirSync(folderPath, { recursive: true });
-        }
-
-        const filename = `palettes.png`;
-        const filePath = path.join(folderPath, filename);
-        console.log(filePath);
-        const out = fs.createWriteStream(filePath);
-        const stream = data.createPNGStream();
-
-        stream.pipe(out);
-    } catch (err) {
-        console.log(err);
-    }
+const toHex = (value) => {
+    const clamped = Math.max(0, Math.min(255, Math.round(value)));
+    return clamped.toString(16).padStart(2, '0');
 };
 
-palettes.forEach(([name, colors], i) => {
-    const row = Math.floor(i / palettesPerRow);
-    const col = i % palettesPerRow;
-    const x0 = col * (swatchSize * 4 + swatchGap * 3 + paletteGap);
-    const y0 = row * (swatchSize + paletteGap);
+export const generatePaletteGridSvg = (paletteEntries, options = {}) => {
+    const resolvedPalettes = Array.isArray(paletteEntries) ? paletteEntries : Object.entries(paletteEntries);
+    const { palettesPerRow = 4, swatchSize = 32, swatchGap = 4, paletteGap = 30, backgroundColor = '#000', textColor = '#fff' } = options;
 
-    // Draw each color swatch
-    colors.colors.forEach((color, j) => {
-        ctx.fillStyle = `rgb(${color.r},${color.g},${color.b})`;
-        ctx.fillRect(x0 + j * (swatchSize + swatchGap), y0, swatchSize, swatchSize);
-    });
+    const numRows = Math.ceil(resolvedPalettes.length / palettesPerRow);
+    const width = palettesPerRow * (swatchSize * 4 + swatchGap * 3 + paletteGap);
+    const height = numRows * (swatchSize + paletteGap);
 
-    // Draw palette name
-    ctx.fillStyle = '#fff';
-    ctx.font = '14px sans-serif';
-    ctx.fillText(name, x0, y0 + swatchSize + 14);
-});
+    const svgBody = resolvedPalettes
+        .map(([name, palette], i) => {
+            const row = Math.floor(i / palettesPerRow);
+            const col = i % palettesPerRow;
+            const x0 = col * (swatchSize * 4 + swatchGap * 3 + paletteGap);
+            const y0 = row * (swatchSize + paletteGap);
+            const colorEntries = Array.isArray(palette?.colors) ? palette.colors : [];
 
-createPNG(canvas);
+            const swatches = colorEntries
+                .map((color, j) => {
+                    const hexColor = `#${toHex(color.r)}${toHex(color.g)}${toHex(color.b)}`;
+                    const x = x0 + j * (swatchSize + swatchGap);
+                    return `<rect x="${x}" y="${y0}" width="${swatchSize}" height="${swatchSize}" fill="${hexColor}" />`;
+                })
+                .join('');
+
+            const label = `<text x="${x0}" y="${y0 + swatchSize + 14}" fill="${textColor}" font-family="sans-serif" font-size="14">${escapeXml(name)}</text>`;
+
+            return `${swatches}${label}`;
+        })
+        .join('');
+
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+  <rect width="100%" height="100%" fill="${backgroundColor}" />
+  ${svgBody}
+</svg>`;
+};
+
+export const writePaletteGridSvg = (outputFilePath = path.resolve(process.cwd(), 'src/assets/palettes.svg')) => {
+    const folderPath = path.dirname(outputFilePath);
+
+    if (!fs.existsSync(folderPath)) {
+        fs.mkdirSync(folderPath, { recursive: true });
+    }
+
+    const svg = generatePaletteGridSvg(palettes);
+    fs.writeFileSync(outputFilePath, svg, 'utf8');
+    return outputFilePath;
+};
+
+const run = () => {
+    const outputFilePath = path.resolve(process.cwd(), 'src/assets/palettes.svg');
+    const writtenFilePath = writePaletteGridSvg(outputFilePath);
+    console.log(writtenFilePath);
+};
+
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+    run();
+}

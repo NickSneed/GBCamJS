@@ -59,7 +59,7 @@ Converts raw pixel data into an RGBA array using a specific palette.
 - **`paletteOrder`**: `string` (optional) - Reorders the palette. Options: `'invert'`, `'pa'`, `'pb'`, `'pc'`, `'pd'`.
 - **Returns**: `Uint8ClampedArray` - The RGBA pixel data (4 bytes per pixel).
 
-!Game Boy Camera Palettes
+![Game Boy Camera palettes](src/assets/palettes.svg)
 
 ### `applyEffect(pixels, effect)`
 
